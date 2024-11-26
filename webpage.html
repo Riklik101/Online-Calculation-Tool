@@ -47,20 +47,32 @@
         const outputElement = document.getElementById('output');
         const inputElement = document.getElementById('input');
 
-        function handleInput(event) {
+        async function handleInput(event) {
             if (event.key === 'Enter') {
                 const command = inputElement.value;
-                processCommand(command);
+                await processCommand(command);
                 inputElement.value = '';
             }
         }
 
-        function processCommand(command) {
+        async function processCommand(command) {
+            outputElement.innerText += `> ${command}\n`;
             try {
-                const result = eval(command);
-                outputElement.innerText += `> ${command}\n${result}\n`;
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command })
+                });
+                const data = await response.json();
+                if (data.result) {
+                    outputElement.innerText += `${data.result}\n`;
+                } else if (data.error) {
+                    outputElement.innerText += `Error: ${data.error}\n`;
+                }
             } catch (error) {
-                outputElement.innerText += `> ${command}\nError: Invalid command\n`;
+                outputElement.innerText += `Error: ${error.message}\n`;
             }
             outputElement.scrollTop = outputElement.scrollHeight;
         }
