@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Calculator</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #000;
+            color: #0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .terminal {
+            width: 80%;
+            max-width: 600px;
+            background-color: #000;
+            padding: 20px;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+        }
+        .output {
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .input {
+            width: 100%;
+            background-color: #000;
+            color: #0f0;
+            border: none;
+            outline: none;
+            font-family: monospace;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="output" id="output"></div>
+        <input type="text" class="input" id="input" onkeydown="handleInput(event)">
+    </div>
+    <script>
+        const outputElement = document.getElementById('output');
+        const inputElement = document.getElementById('input');
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const command = inputElement.value;
+                processCommand(command);
+                inputElement.value = '';
+            }
+        }
+
+        function processCommand(command) {
+            try {
+                const result = eval(command);
+                outputElement.innerText += `> ${command}\n${result}\n`;
+            } catch (error) {
+                outputElement.innerText += `> ${command}\nError: Invalid command\n`;
+            }
+            outputElement.scrollTop = outputElement.scrollHeight;
+        }
+    </script>
+</body>
+</html>
